@@ -168,6 +168,9 @@ let isInitialized = false;
 async function fetchSoldTickets() {
     try {
         const response = await fetch(`${BACKEND_URL}/api/sold-tickets`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         console.log("Tickets récupérés:", data.tickets);
         return data.tickets;
@@ -232,7 +235,12 @@ function prepareDataForGoogleSheets() {
         },
         body: JSON.stringify(sheetData),
     })
-    .then(response => response.text())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+    })
     .then(data => console.log('Succès:', data))
     .catch((error) => {
         console.error('Erreur:', error);
