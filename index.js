@@ -5,7 +5,7 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 const app = express();
 
 app.use(cors({
-  origin: 'https://luckydrawgalafkcci.netlify.app',
+  origin: 'https://luckydrawgala2024.netlify.app',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -27,7 +27,7 @@ async function initializeGoogleSheets() {
     console.log('Google Sheets initialized successfully');
   } catch (error) {
     console.error('Error initializing Google Sheets:', error);
-    throw error; // Propager l'erreur pour une gestion au niveau de l'application
+    throw error;
   }
 }
 
@@ -35,7 +35,6 @@ app.use(async (req, res, next) => {
   if (!isInitialized) {
     try {
       await initializeGoogleSheets();
-      isInitialized = true;
     } catch (error) {
       return res.status(500).send('Server initialization error');
     }
@@ -46,7 +45,7 @@ app.use(async (req, res, next) => {
 app.get('/api/sold-tickets', async (req, res) => {
   try {
     console.log('Récupération des tickets vendus...');
-    const sheet = doc.sheetsByTitle["Tickets"]; // Vérifiez que ce nom correspond à votre feuille
+    const sheet = doc.sheetsByTitle["Tickets"];
     if (!sheet) {
       throw new Error("Feuille 'Tickets' non trouvée");
     }
@@ -93,4 +92,3 @@ app.post('/api/lottery-results', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
-
