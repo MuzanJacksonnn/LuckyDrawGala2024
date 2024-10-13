@@ -318,3 +318,4 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         checkTicket();
     });
+ });
