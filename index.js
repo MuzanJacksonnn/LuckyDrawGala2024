@@ -14,7 +14,6 @@ app.use(cors({
 app.use(express.json());
 
 const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
-let isInitialized = false;
 
 async function initializeGoogleSheets() {
   try {
@@ -23,24 +22,13 @@ async function initializeGoogleSheets() {
       private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
     });
     await doc.loadInfo();
-    isInitialized = true;
     console.log('Google Sheets initialized successfully');
+    console.log('Sheets available:', doc.sheetsByIndex.map(s => s.title));
   } catch (error) {
     console.error('Error initializing Google Sheets:', error);
     throw error;
   }
 }
-
-app.use(async (req, res, next) => {
-  if (!isInitialized) {
-    try {
-      await initializeGoogleSheets();
-    } catch (error) {
-      return res.status(500).send('Server initialization error');
-    }
-  }
-  next();
-});
 
 app.get('/api/sold-tickets', async (req, res) => {
   try {
@@ -51,9 +39,15 @@ app.get('/api/sold-tickets', async (req, res) => {
       throw new Error("Feuille 'Tickets' non trouvée");
     }
     console.log('Feuille trouvée:', sheet.title);
-    const rows = await sheet.getRows();
-    console.log('Nombre de lignes récupérées:', rows.length);
-    const tickets = rows.map(row => row.Ticket).filter(ticket => ticket !== null && ticket !== '' && ticket !== undefined);
+    await sheet.loadCells('A:A');  // Chargez uniquement la première colonne
+    const tickets = [];
+    for (let i = 1; i < sheet.rowCount; i++) {  // Commencez à 1 pour ignorer l'en-tête
+      const cell = sheet.getCell(i, 0);  // 0 représente la colonne A
+      if (cell.value) {
+        tickets.push(cell.value.toString());
+      }
+    }
+    console.log('Nombre de tickets récupérés:', tickets.length);
     console.log('Tickets vendus récupérés:', tickets);
     res.json({ tickets });
   } catch (error) {
@@ -92,4 +86,12 @@ app.post('/api/lottery-results', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
+
+(async function startServer() {
+  try {
+    await initializeGoogleSheets();
+    app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
+  } catch (error) {
+    console.error('Erreur lors du démarrage du serveur:', error);
+  }
+})();
