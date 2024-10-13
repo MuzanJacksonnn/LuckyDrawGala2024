@@ -167,19 +167,22 @@ let winningLots = {};
 let isInitialized = false;
 
 async function fetchSoldTickets() {
-    try {
-        const response = await fetch(`${BACKEND_URL}/api/sold-tickets`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Tickets récupérés:", data.tickets);
-        return data.tickets;
-    } catch (error) {
-        console.error('Erreur lors de la récupération des tickets:', error);
-        showError("Impossible de récupérer les tickets vendus. Veuillez réessayer plus tard.");
-        return [];
+  try {
+    console.log('Fetching sold tickets from:', `${BACKEND_URL}/api/sold-tickets`);
+    const response = await fetch(`${BACKEND_URL}/api/sold-tickets`);
+    console.log('Response status:', response.status);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    const data = await response.json();
+    console.log("Tickets récupérés (raw data):", data);
+    console.log("Tickets récupérés (tickets array):", data.tickets);
+    return data.tickets;
+  } catch (error) {
+    console.error('Erreur détaillée lors de la récupération des tickets:', error);
+    showError("Impossible de récupérer les tickets vendus. Veuillez réessayer plus tard.");
+    return [];
+  }
 }
 
 function shuffleArray(array) {
