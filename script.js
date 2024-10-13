@@ -289,3 +289,4 @@ window.resetDrawAdmin = async function() {
     isInitialized = false;
     await initializeDraw();
     console.log("Tirage réinitialisé par l'administrateur");
+    }
