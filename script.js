@@ -162,6 +162,7 @@ const lots = [
   // ... Ajoutez le reste des lots ici
 ];
 
+
 let winningLots = {};
 let isInitialized = false;
 
@@ -191,14 +192,20 @@ function shuffleArray(array) {
 
 async function generateWinningLots() {
     const soldTickets = await fetchSoldTickets();
+    if (soldTickets.length === 0) {
+        console.warn("Aucun ticket vendu n'a été trouvé.");
+        return;
+    }
+
     const shuffledTickets = shuffleArray([...soldTickets]);
+    const shuffledLots = shuffleArray([...lots]);
     winningLots = {};
 
-    const numberOfWinners = Math.min(shuffledTickets.length, lots.length);
+    const numberOfWinners = Math.min(shuffledTickets.length, shuffledLots.length);
 
     for (let i = 0; i < numberOfWinners; i++) {
         winningLots[shuffledTickets[i]] = {
-            ...lots[i],
+            ...shuffledLots[i],
             ticketNumber: shuffledTickets[i]
         };
     }
@@ -218,6 +225,15 @@ function prepareDataForGoogleSheets() {
     });
 
     console.log("Données préparées pour Google Sheets:", sheetData);
+    
+    if (sheetData.length > 1) {
+        sendDataToBackend(sheetData);
+    } else {
+        console.warn("Aucun résultat à envoyer. Vérifiez que des tickets ont été vendus et des lots attribués.");
+    }
+}
+
+function sendDataToBackend(sheetData) {
     fetch(`${BACKEND_URL}/api/lottery-results`, {
         method: 'POST',
         headers: {
@@ -231,7 +247,10 @@ function prepareDataForGoogleSheets() {
         }
         return response.text();
     })
-    .then(data => console.log('Résultats enregistrés avec succès:', data))
+    .then(data => {
+        console.log('Résultats enregistrés avec succès:', data);
+        showSuccess("Les résultats du tirage ont été enregistrés avec succès.");
+    })
     .catch((error) => {
         console.error('Erreur:', error);
         showError("Impossible d'enregistrer les résultats. Veuillez réessayer plus tard.");
@@ -268,20 +287,19 @@ async function initializeDraw() {
     }
 }
 
+function showSuccess(message) {
+    const resultDiv = document.getElementById('result');
+    resultDiv.textContent = `Succès : ${message}`;
+    resultDiv.style.display = 'block';
+    resultDiv.style.color = 'green';
+}
+
 function showError(message) {
     const resultDiv = document.getElementById('result');
     resultDiv.textContent = `Erreur : ${message}`;
     resultDiv.style.display = 'block';
+    resultDiv.style.color = 'red';
 }
-
-window.addEventListener('load', initializeDraw);
-
-document.getElementById('check-ticket').addEventListener('click', checkTicket);
-
-document.getElementById('ticket-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    checkTicket();
-});
 
 // Fonction pour réinitialiser le tirage (accessible uniquement via la console)
 window.resetDrawAdmin = async function() {
@@ -289,10 +307,9 @@ window.resetDrawAdmin = async function() {
     isInitialized = false;
     await initializeDraw();
     console.log("Tirage réinitialisé par l'administrateur");
+};
 
-// 
-
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     initializeDraw();
 
     document.getElementById('check-ticket').addEventListener('click', checkTicket);
