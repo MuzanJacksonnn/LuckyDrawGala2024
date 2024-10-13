@@ -289,4 +289,16 @@ window.resetDrawAdmin = async function() {
     isInitialized = false;
     await initializeDraw();
     console.log("Tirage réinitialisé par l'administrateur");
-    }
+
+// 
+
+    document.addEventListener('DOMContentLoaded', function() {
+    initializeDraw();
+
+    document.getElementById('check-ticket').addEventListener('click', checkTicket);
+
+    document.getElementById('ticket-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        checkTicket();
+    });
+});
