@@ -177,7 +177,12 @@ async function fetchSoldTickets() {
     const data = await response.json();
     console.log("Tickets récupérés (raw data):", data);
     console.log("Tickets récupérés (tickets array):", data.tickets);
-    return data.tickets;
+    if (data.tickets && data.tickets.length > 0) {
+      return data.tickets;
+    } else {
+      console.warn("Aucun ticket trouvé dans la réponse");
+      return [];
+    }
   } catch (error) {
     console.error('Erreur détaillée lors de la récupération des tickets:', error);
     showError("Impossible de récupérer les tickets vendus. Veuillez réessayer plus tard.");
