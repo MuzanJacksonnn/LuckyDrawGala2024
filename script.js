@@ -309,6 +309,7 @@ window.resetDrawAdmin = async function() {
     console.log("Tirage réinitialisé par l'administrateur");
 };
 
+// Assurez-vous que cette fonction est définie après toutes les autres fonctions et variables qu'elle utilise
 document.addEventListener('DOMContentLoaded', function() {
     initializeDraw();
 
@@ -318,4 +319,4 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         checkTicket();
     });
- });
+});
