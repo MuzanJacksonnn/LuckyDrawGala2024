@@ -35,14 +35,13 @@ app.get('/api/sold-tickets', async (req, res) => {
     console.log('Récupération des tickets vendus...');
     const sheet = doc.sheetsByTitle["Tickets"];
     if (!sheet) {
-      console.error("Feuille 'Tickets' non trouvée");
       throw new Error("Feuille 'Tickets' non trouvée");
     }
     console.log('Feuille trouvée:', sheet.title);
-    await sheet.loadCells('A:A');  // Chargez uniquement la première colonne
+    await sheet.loadCells('A:A');
     const tickets = [];
-    for (let i = 1; i < sheet.rowCount; i++) {  // Commencez à 1 pour ignorer l'en-tête
-      const cell = sheet.getCell(i, 0);  // 0 représente la colonne A
+    for (let i = 1; i < sheet.rowCount; i++) {
+      const cell = sheet.getCell(i, 0);
       if (cell.value) {
         tickets.push(cell.value.toString());
       }
@@ -51,7 +50,7 @@ app.get('/api/sold-tickets', async (req, res) => {
     console.log('Tickets vendus récupérés:', tickets);
     res.json({ tickets });
   } catch (error) {
-    console.error('Erreur détaillée lors de la récupération des tickets:', error);
+    console.error('Erreur lors de la récupération des tickets:', error);
     res.status(500).json({ error: error.message });
   }
 });
