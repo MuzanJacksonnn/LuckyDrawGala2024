@@ -3,6 +3,7 @@ const SPREADSHEET_ID = '1gDVc7UdH0P6TKq1cBtYV_D3i0RhVmarPCssWX_bR8gQ';
 const API_URL = 'http://localhost:3000';
 const RANGE = 'Tickets!A:A';
 const API_KEY = 'AIzaSyB7khzSFUMiGDzPsa04Mq3TVdDfDGOwg70';
+const BACKEND_URL = 'https://luckydrawgala2024result-33e0820293b5.herokuapp.com';
 
 // Liste des lots avec sponsor et description
 const lots = [
@@ -165,15 +166,14 @@ let winningLots = {};
 let isInitialized = false;
 
 async function fetchSoldTickets() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`;
     try {
-        const response = await fetch('http://localhost:3000/api/lottery-results');
+        const response = await fetch(`${BACKEND_URL}/api/sold-tickets`);
         const data = await response.json();
-        const tickets = data.values.flat().map(String);
-        console.log("Tickets récupérés:", tickets);
-        return tickets;
+        console.log("Tickets récupérés:", data.tickets);
+        return data.tickets;
     } catch (error) {
         console.error('Erreur lors de la récupération des tickets:', error);
+        showError("Impossible de récupérer les tickets vendus. Veuillez réessayer plus tard.");
         return [];
     }
 }
@@ -201,7 +201,7 @@ async function generateWinningLots() {
 
         for (let i = 0; i < numberOfWinners; i++) {
             winningLots[shuffledTickets[i]] = {
-                lotNumber: i + 1,
+                lotNumber: shuffledLots[i].lotNumber,
                 sponsor: shuffledLots[i].sponsor,
                 description: shuffledLots[i].description,
                 ticketNumber: shuffledTickets[i]
@@ -225,22 +225,24 @@ function prepareDataForGoogleSheets() {
     });
 
     console.log("Données préparées pour Google Sheets:", sheetData);
-    fetch(`${API_URL}/api/lottery-results`, {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(sheetData),
-})
-.then(response => response.text())
-.then(data => console.log('Succès:', data))
-.catch((error) => console.error('Erreur:', error));
-
+    fetch(`${BACKEND_URL}/api/lottery-results`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sheetData),
+    })
+    .then(response => response.text())
+    .then(data => console.log('Succès:', data))
+    .catch((error) => {
+        console.error('Erreur:', error);
+        showError("Impossible d'enregistrer les résultats. Veuillez réessayer plus tard.");
+    });
 }
 
 function checkTicket() {
     if (!isInitialized) {
-        console.log("Le tirage n'est pas encore initialisé");
+        showError("Le tirage n'est pas encore initialisé. Veuillez patienter.");
         return;
     }
 
@@ -259,17 +261,19 @@ function checkTicket() {
 }
 
 async function initializeDraw() {
-    await generateWinningLots();
-    console.log("Tirage au sort initialisé");
+    try {
+        await generateWinningLots();
+        console.log("Tirage au sort initialisé");
+    } catch (error) {
+        console.error("Erreur lors de l'initialisation du tirage:", error);
+        showError("Erreur lors de l'initialisation du tirage. Veuillez recharger la page.");
+    }
 }
 
-// Fonction pour réinitialiser le tirage (accessible uniquement via la console)
-window.resetDrawAdmin = async function() {
-    localStorage.removeItem('winningLots');
-    winningLots = {};
-    isInitialized = false;
-    await initializeDraw();
-    console.log("Tirage réinitialisé par l'administrateur");
+function showError(message) {
+    const resultDiv = document.getElementById('result');
+    resultDiv.textContent = `Erreur : ${message}`;
+    resultDiv.style.display = 'block';
 }
 
 window.addEventListener('load', initializeDraw);
@@ -280,3 +284,12 @@ document.getElementById('ticket-form').addEventListener('submit', function(e) {
     e.preventDefault();
     checkTicket();
 });
+
+// Fonction pour réinitialiser le tirage (accessible uniquement via la console)
+window.resetDrawAdmin = async function() {
+    localStorage.removeItem('winningLots');
+    winningLots = {};
+    isInitialized = false;
+    await initializeDraw();
+    console.log("Tirage réinitialisé par l'administrateur");
+}
