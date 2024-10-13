@@ -190,30 +190,20 @@ function shuffleArray(array) {
 }
 
 async function generateWinningLots() {
-    const savedLots = localStorage.getItem('winningLots');
-    if (savedLots) {
-        winningLots = JSON.parse(savedLots);
-        console.log("Lots gagnants récupérés du stockage local:", winningLots);
-    } else {
-        const soldTickets = await fetchSoldTickets();
-        const shuffledTickets = shuffleArray([...soldTickets]);
-        const shuffledLots = shuffleArray([...lots]);
-        winningLots = {};
+    const soldTickets = await fetchSoldTickets();
+    const shuffledTickets = shuffleArray([...soldTickets]);
+    winningLots = {};
 
-        const numberOfWinners = Math.min(shuffledTickets.length, shuffledLots.length);
+    const numberOfWinners = Math.min(shuffledTickets.length, lots.length);
 
-        for (let i = 0; i < numberOfWinners; i++) {
-            winningLots[shuffledTickets[i]] = {
-                lotNumber: shuffledLots[i].lotNumber,
-                sponsor: shuffledLots[i].sponsor,
-                description: shuffledLots[i].description,
-                ticketNumber: shuffledTickets[i]
-            };
-        }
-
-        localStorage.setItem('winningLots', JSON.stringify(winningLots));
-        console.log("Nouveaux lots gagnants générés et sauvegardés:", winningLots);
+    for (let i = 0; i < numberOfWinners; i++) {
+        winningLots[shuffledTickets[i]] = {
+            ...lots[i],
+            ticketNumber: shuffledTickets[i]
+        };
     }
+
+    console.log("Lots gagnants générés:", winningLots);
     isInitialized = true;
     prepareDataForGoogleSheets();
 }
@@ -241,7 +231,7 @@ function prepareDataForGoogleSheets() {
         }
         return response.text();
     })
-    .then(data => console.log('Succès:', data))
+    .then(data => console.log('Résultats enregistrés avec succès:', data))
     .catch((error) => {
         console.error('Erreur:', error);
         showError("Impossible d'enregistrer les résultats. Veuillez réessayer plus tard.");
@@ -295,9 +285,7 @@ document.getElementById('ticket-form').addEventListener('submit', function(e) {
 
 // Fonction pour réinitialiser le tirage (accessible uniquement via la console)
 window.resetDrawAdmin = async function() {
-    localStorage.removeItem('winningLots');
     winningLots = {};
     isInitialized = false;
     await initializeDraw();
     console.log("Tirage réinitialisé par l'administrateur");
-}
