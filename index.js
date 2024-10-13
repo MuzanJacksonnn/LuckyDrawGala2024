@@ -55,6 +55,8 @@ app.get('/api/sold-tickets', async (req, res) => {
     const tickets = rows.map(row => row.Ticket).filter(ticket => ticket !== null && ticket !== '' && ticket !== undefined);
     console.log('Tickets vendus récupérés:', tickets);
     res.json({ tickets });
+    console.log('Tickets envoyés au frontend:', tickets);
+    res.json({ tickets });
   } catch (error) {
     console.error('Erreur lors de la récupération des tickets:', error);
     res.status(500).json({ error: error.message });
