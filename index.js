@@ -332,7 +332,7 @@ async function startServer() {
       console.log(`Serveur démarré sur le port ${PORT}`);
     });
   } catch (error) {
-    console.error('Erreur lors de l'initialisation du serveur:', error);
+console.error("Erreur lors de l'initialisation du serveur:", error);
   }
 }
 
