@@ -1,16 +1,27 @@
-const app = express();
 const express = require('express');
 const cors = require('cors');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
+const app = express();
+
 app.use(cors({
-  origin: 'https://luckydrawgala2024.netlify.app',
+  origin: '*', // Autorise toutes les origines pendant le débogage
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    return res.status(200).json({});
+  }
+  next();
+});
 
 const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
 let isInitialized = false;
@@ -185,6 +196,21 @@ async function startServer() {
 }
 
 startServer();
+
+sync function initializeGoogleSheets() {
+  try {
+    await doc.useServiceAccountAuth({
+      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    });
+    await doc.loadInfo();
+    isInitialized = true;
+    console.log('Google Sheets initialized successfully');
+  } catch (error) {
+    console.error('Error initializing Google Sheets:', error);
+    throw error;
+  }
+}
 
 async function generateNewDraw() {
   const ticketSheet = doc.sheetsByTitle["Tickets"];
