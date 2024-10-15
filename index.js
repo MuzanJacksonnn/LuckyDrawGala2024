@@ -1,4 +1,8 @@
+const express = require('express');
 const cors = require('cors');
+const { GoogleSpreadsheet } = require('google-spreadsheet');
+
+const app = express();
 
 app.use(cors({
   origin: 'https://luckydrawgala2024.netlify.app',
@@ -6,8 +10,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
-
-app.use(express.json());
 
 const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
 let isInitialized = false;
