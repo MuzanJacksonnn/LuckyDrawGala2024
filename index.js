@@ -19,8 +19,6 @@ let currentDraw = null;
 
 // Liste des lots (assurez-vous que cette liste est à jour)
 const lots = [
-    // Liste des lots avec sponsor et description
-const lots = [
     { lotNumber: 13, sponsor: "MICHELIN KOREA", description: "1 Set of 4 Tires" },
     { lotNumber: 14, sponsor: "JOSUN PALACE", description: "1 Night Stay in State Room for 2 persons, Breakfast included" },
     { lotNumber: 15, sponsor: "LA VALLEE VILLAGE", description: "Luxury Shopping Tour at La Vallée Village and 500 euros Gift Card" },
