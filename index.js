@@ -271,6 +271,7 @@ app.get('/api/sold-tickets', async (req, res) => {
 });
 
 app.get('/api/current-draw', async (req, res) => {
+  console.log('Requête reçue pour /api/current-draw');
   if (!isInitialized) await initializeGoogleSheets();
 
   if (!currentDraw) {
