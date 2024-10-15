@@ -10,10 +10,7 @@ app.use(cors({
   credentials: true
 }));
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
+app.use(express.json());
 
 const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
 let isInitialized = false;
@@ -312,11 +309,21 @@ app.post('/api/lottery-results', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, async () => {
-  console.log(`Serveur démarré sur le port ${PORT}`);
+async function startServer() {
   try {
     await initializeGoogleSheets();
+    app.listen(PORT, () => {
+      console.log(`Serveur démarré sur le port ${PORT}`);
+    });
   } catch (error) {
     console.error('Erreur lors de l'initialisation du serveur:', error);
   }
+}
+
+startServer();
+
+// Middleware de gestion d'erreurs
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
