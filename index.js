@@ -2,10 +2,10 @@ const express = require('express');
 const cors = require('cors');
 
 app.use(cors({
-  origin: 'https://luckydrawgala2024.netlify.app',
+  app.use(cors({
+  origin: '*',
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
