@@ -10,7 +10,7 @@ const app = express();
 console.log('Express app created');
 
 app.use(cors({
-  origin: '*', // Autorise toutes les origines pendant le débogage
+  origin: 'https://luckydrawgala2024.netlify.app',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
