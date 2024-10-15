@@ -1,3 +1,6 @@
+"scripts": {
+  "start": "node index.js"
+}
 {
   "name": "tirage-au-sort",
   "version": "1.0.0",
