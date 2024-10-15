@@ -271,7 +271,9 @@ app.get('/api/sold-tickets', async (req, res) => {
 });
 
 app.get('/api/current-draw', async (req, res) => {
-  console.log('Requête reçue pour /api/current-draw');
+  res.header('Access-Control-Allow-Origin', 'https://luckydrawgala2024.netlify.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (!isInitialized) await initializeGoogleSheets();
 
   if (!currentDraw) {
