@@ -1,11 +1,6 @@
-console.log('Starting application...');
 const express = require('express');
-console.log('Express loaded');
 const cors = require('cors');
-console.log('CORS loaded');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
-console.log('GoogleSpreadsheet loaded');
-
 const app = express();
 console.log('Express app created');
 
@@ -188,19 +183,6 @@ const lots = [
     { lotNumber: 164, sponsor: "CHATEAU D'ISSAN", description: "Magnum Bottle of Chateau d'Issan 2018 Grand Cru Classé from Margaux" }
   // ... Ajoutez le reste des lots ici
 ];
-
-async function startServer() {
-  try {
-    await initializeGoogleSheets();
-    app.listen(PORT, () => {
-      console.log(`Serveur démarré sur le port ${PORT}`);
-    });
-  } catch (error) {
-    console.error('Erreur lors de l'initialisation du serveur:', error);
-  }
-}
-
-startServer();
 
 async function initializeGoogleSheets() {
   try {
