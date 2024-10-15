@@ -1,3 +1,13 @@
+console.log('Starting application...');
+const express = require('express');
+console.log('Express loaded');
+const cors = require('cors');
+console.log('CORS loaded');
+const { GoogleSpreadsheet } = require('google-spreadsheet');
+console.log('GoogleSpreadsheet loaded');
+
+const app = express();
+console.log('Express app created');
 const express = require('express');
 const cors = require('cors');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
