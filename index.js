@@ -8,11 +8,6 @@ console.log('GoogleSpreadsheet loaded');
 
 const app = express();
 console.log('Express app created');
-const express = require('express');
-const cors = require('cors');
-const { GoogleSpreadsheet } = require('google-spreadsheet');
-
-const app = express();
 
 app.use(cors({
   origin: '*', // Autorise toutes les origines pendant le débogage
@@ -207,7 +202,7 @@ async function startServer() {
 
 startServer();
 
-sync function initializeGoogleSheets() {
+async function initializeGoogleSheets() {
   try {
     await doc.useServiceAccountAuth({
       client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
