@@ -29,7 +29,7 @@ async function checkTicket() {
 
   if (currentDraw[ticketNumber]) {
     const lot = currentDraw[ticketNumber];
-    resultDiv.textContent = `Félicitations ! Vous avez gagné le lot ${lot.lotNumber} : ${lot.sponsor} - ${lot.description}`;
+    displayResult(lot);
   } else {
     resultDiv.textContent = 'Désolé, vous n\'avez pas gagné. Tentez votre chance une prochaine fois !';
   }
@@ -40,12 +40,10 @@ function displayResult(lot) {
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = `
         <div class="lot-result">
-            <img src="${lot.imageUrl}" alt="${lot.description}" class="lot-image" onerror="this.onerror=null; this.src='path/to/default-image.jpg';">
+            <img src="${lot.imageUrl || '/path/to/default-image.jpg'}" alt="${lot.description}" class="lot-image">
             <p class="lot-description"><span class="lot-sponsor">${lot.sponsor}</span> - ${lot.description}</p>
         </div>
-    `;
-}
-
+`;
 
 window.secureResetDraw = async function() {
   const password = prompt("Entrez le mot de passe pour réinitialiser le tirage:");
