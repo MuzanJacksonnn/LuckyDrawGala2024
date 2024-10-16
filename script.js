@@ -13,11 +13,11 @@ async function fetchCurrentDraw() {
       throw new Error('Erreur lors de la récupération du tirage');
     }
     currentDraw = await response.json();
+    console.log("Tirage récupéré :", currentDraw); // Débogage
   } catch (error) {
     console.error('Erreur:', error);
     alert('Impossible de récupérer le tirage actuel. Veuillez réessayer plus tard.');
   }
-}
 
 async function checkTicket() {
   if (!currentDraw) {
