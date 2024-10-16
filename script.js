@@ -23,15 +23,18 @@ async function checkTicket() {
   if (!currentDraw) {
     await fetchCurrentDraw();
   }
-
   const ticketNumber = document.getElementById('ticket-number').value;
   const resultDiv = document.getElementById('result');
-
   if (currentDraw[ticketNumber]) {
     const lot = currentDraw[ticketNumber];
     displayResult(lot);
   } else {
-    resultDiv.textContent = 'Désolé, vous n\'avez pas gagné. Tentez votre chance une prochaine fois !';
+    resultDiv.innerHTML = `
+      <div class="lot-result">
+        <h2>Désolé, vous n'avez pas gagné.</h2>
+        <p>Tentez votre chance une prochaine fois !</p>
+      </div>
+    `;
   }
   resultDiv.style.display = 'block';
 }
@@ -40,10 +43,13 @@ function displayResult(lot) {
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = `
         <div class="lot-result">
+            <h2>Félicitations ! Vous avez gagné !</h2>
             <img src="${lot.imageUrl || '/path/to/default-image.jpg'}" alt="${lot.description}" class="lot-image">
+            <p class="lot-info">Lot numéro : ${lot.lotNumber}</p>
             <p class="lot-description"><span class="lot-sponsor">${lot.sponsor}</span> - ${lot.description}</p>
         </div>
-`;
+    `;
+}
 
 window.secureResetDraw = async function() {
   const password = prompt("Entrez le mot de passe pour réinitialiser le tirage:");
@@ -55,11 +61,9 @@ window.secureResetDraw = async function() {
       },
       body: JSON.stringify({ password }),
     });
-
     if (!response.ok) {
       throw new Error('Réinitialisation échouée');
     }
-
     const data = await response.json();
     alert(data.message);
     currentDraw = null; // Forcer le rechargement du tirage
@@ -71,9 +75,9 @@ window.secureResetDraw = async function() {
 
 document.addEventListener('DOMContentLoaded', async function() {
   await fetchCurrentDraw();
-
   document.getElementById('check-ticket').addEventListener('click', checkTicket);
   document.getElementById('ticket-form').addEventListener('submit', function(e) {
     e.preventDefault();
     checkTicket();
   });
+});
