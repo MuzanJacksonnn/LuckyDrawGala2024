@@ -83,7 +83,6 @@ window.secureResetDraw = async function() {
     alert('Erreur lors de la réinitialisation du tirage');
   }
 };
-
 document.addEventListener('DOMContentLoaded', async function() {
   await fetchCurrentDraw();
   document.getElementById('check-ticket').addEventListener('click', checkTicket);
