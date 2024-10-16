@@ -36,6 +36,17 @@ async function checkTicket() {
   resultDiv.style.display = 'block';
 }
 
+function displayResult(lot) {
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = `
+        <div class="lot-result">
+            <img src="${lot.imageUrl}" alt="${lot.description}" class="lot-image" onerror="this.onerror=null; this.src='path/to/default-image.jpg';">
+            <p class="lot-description"><span class="lot-sponsor">${lot.sponsor}</span> - ${lot.description}</p>
+        </div>
+    `;
+}
+
+
 window.secureResetDraw = async function() {
   const password = prompt("Entrez le mot de passe pour réinitialiser le tirage:");
   try {
