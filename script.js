@@ -58,14 +58,6 @@ function displayResult(lot) {
     </div>
   `;
 }
-  resultDiv.innerHTML = `
-    <div class="lot-result">
-      <h2>Félicitations ! Vous avez gagné !</h2>
-      ${imageHtml}
-      <p class="lot-info">Lot numéro : ${lot.lotNumber}</p>
-      <p class="lot-description"><span class="lot-sponsor">${lot.sponsor}</span> - ${lot.description}</p>
-    </div>
-  `;
 
 wwindow.secureResetDraw = async function() {
   const password = prompt("Entrez le mot de passe pour réinitialiser le tirage:");
