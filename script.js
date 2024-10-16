@@ -38,13 +38,22 @@ async function checkTicket() {
   }
   resultDiv.style.display = 'block';
 }
-
 function displayResult(lot) {
     const resultDiv = document.getElementById('result');
+    console.log("Lot reçu :", lot); // Débogage
+    
+    let imageHtml = '';
+    if (lot.imageUrl) {
+        console.log("URL de l'image :", lot.imageUrl); // Débogage
+        imageHtml = `<img src="${lot.imageUrl}" alt="${lot.description}" class="lot-image" onerror="console.log('Erreur de chargement de l\'image'); this.style.display='none';">`;
+    } else {
+        console.log("Pas d'URL d'image pour ce lot"); // Débogage
+    }
+
     resultDiv.innerHTML = `
         <div class="lot-result">
             <h2>Félicitations ! Vous avez gagné !</h2>
-            ${lot.imageUrl ? `<img src="${lot.imageUrl}" alt="${lot.description}" class="lot-image" onerror="this.style.display='none';">` : ''}
+            ${imageHtml}
             <p class="lot-info">Lot numéro : ${lot.lotNumber}</p>
             <p class="lot-description"><span class="lot-sponsor">${lot.sponsor}</span> - ${lot.description}</p>
         </div>
