@@ -77,4 +77,3 @@ document.addEventListener('DOMContentLoaded', async function() {
     e.preventDefault();
     checkTicket();
   });
-});
