@@ -1,11 +1,11 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    height: 100vh;
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
@@ -13,72 +13,74 @@ body {
 
 h1 {
     color: #1a2b4a;
-    font-size: 32px;
-    margin-bottom: 20px;
+    font-size: 48px;
+    margin-bottom: 40px;
     text-align: center;
 }
 
 #ticket-form {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    width: 100%;
+    max-width: 600px;
     margin-bottom: 20px;
+}
+
+label {
+    color: #333;
+    font-size: 18px;
+    margin-right: 20px;
+    white-space: nowrap;
 }
 
 .input-group {
     display: flex;
-    margin-top: 10px;
+    width: 50%;
 }
 
 input[type="number"] {
+    flex-grow: 1;
+    border: 2px solid #e74c3c;
+    border-radius: 4px;
     padding: 10px;
     font-size: 16px;
-    border: 2px solid #ddd;
-    border-radius: 4px 0 0 4px;
-    width: 200px;
 }
 
 button {
-    padding: 10px 20px;
-    font-size: 16px;
     background-color: #e74c3c;
     color: white;
     border: none;
-    border-radius: 0 4px 4px 0;
+    border-radius: 4px;
+    padding: 12px 20px;
+    font-size: 16px;
     cursor: pointer;
+    margin-left: 10px;
+    white-space: nowrap;
 }
 
 button:hover {
     background-color: #c0392b;
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 #result {
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    max-width: 400px;
-    width: 100%;
     margin-top: 20px;
-    display: none;
-}
-
-.lot-result h2 {
-    color: #e74c3c;
-    margin-top: 0;
-}
-
-.lot-image {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 15px;
+    padding: 10px;
+    border: 2px solid #e74c3c;
     border-radius: 4px;
-}
-
-.lot-info, .lot-description {
-    margin-bottom: 10px;
-}
-
-.lot-sponsor {
-    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    box-sizing: border-box;
+    display: none;
 }
