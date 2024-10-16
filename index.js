@@ -29,7 +29,7 @@ let currentDraw = null;
 
 // Liste des lots (assurez-vous que cette liste est à jour)
 const lots = [
-    { lotNumber: 13, sponsor: "MICHELIN KOREA", description: "1 Set of 4 Tires" },
+    { lotNumber: 13, sponsor: "MICHELIN KOREA", description: "1 Set of 4 Tires", imageUrl: "https://raw.githubusercontent.com/MuzanJacksonnn/LuckyDrawGala2024/main/images/Coupon%20Racinee.jpg" },
     { lotNumber: 14, sponsor: "JOSUN PALACE", description: "1 Night Stay in State Room for 2 persons, Breakfast included" },
     { lotNumber: 15, sponsor: "LA VALLEE VILLAGE", description: "Luxury Shopping Tour at La Vallée Village and 500 euros Gift Card" },
     { lotNumber: 16, sponsor: "LA VALLEE VILLAGE", description: "Luxury Shopping Tour at La Vallée Village and 500 euros Gift Card" },
