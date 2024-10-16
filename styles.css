@@ -72,6 +72,34 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
+.lot-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.lot-result {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+}
+
+.lot-description {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.lot-sponsor {
+    font-weight: bold;
+    color: #333;
+}
+
 #result {
     margin-top: 20px;
     padding: 10px;
