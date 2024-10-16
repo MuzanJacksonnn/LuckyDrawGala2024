@@ -44,7 +44,7 @@ function displayResult(lot) {
     resultDiv.innerHTML = `
         <div class="lot-result">
             <h2>Félicitations ! Vous avez gagné !</h2>
-            <img src="${lot.imageUrl || '/path/to/default-image.jpg'}" alt="${lot.description}" class="lot-image">
+            ${lot.imageUrl ? `<img src="${lot.imageUrl}" alt="${lot.description}" class="lot-image" onerror="this.style.display='none';">` : ''}
             <p class="lot-info">Lot numéro : ${lot.lotNumber}</p>
             <p class="lot-description"><span class="lot-sponsor">${lot.sponsor}</span> - ${lot.description}</p>
         </div>
