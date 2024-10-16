@@ -44,14 +44,20 @@ function displayResult(lot) {
   const resultDiv = document.getElementById('result');
   console.log("Lot reçu :", lot); // Débogage
   
-  let imageHtml = '';
-  if (lot.imageUrl) {
-    console.log("URL de l'image :", lot.imageUrl); // Débogage
-    imageHtml = `<img src="${lot.imageUrl}" alt="${lot.description}" class="lot-image" onerror="console.log('Erreur de chargement de l\'image'); this.style.display='none';">`;
-  } else {
-    console.log("Pas d'URL d'image pour ce lot"); // Débogage
-  }
+  const defaultImageUrl = 'https://example.com/path/to/default-image.jpg'; // Remplacez par une URL d'image par défaut réelle
+  const imageUrl = lot.imageUrl || defaultImageUrl;
+  
+  const imageHtml = `<img src="${imageUrl}" alt="${lot.description}" class="lot-image" onerror="this.src='${defaultImageUrl}'; console.log('Utilisation de l\'image par défaut');">`;
 
+  resultDiv.innerHTML = `
+    <div class="lot-result">
+      <h2>Félicitations ! Vous avez gagné !</h2>
+      ${imageHtml}
+      <p class="lot-info">Lot numéro : ${lot.lotNumber}</p>
+      <p class="lot-description"><span class="lot-sponsor">${lot.sponsor}</span> - ${lot.description}</p>
+    </div>
+  `;
+}
   resultDiv.innerHTML = `
     <div class="lot-result">
       <h2>Félicitations ! Vous avez gagné !</h2>
