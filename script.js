@@ -68,7 +68,7 @@ function displayResult(lot) {
   `;
 }
 
-window.secureResetDraw = async function() {
+wwindow.secureResetDraw = async function() {
   const password = prompt("Entrez le mot de passe pour réinitialiser le tirage:");
   try {
     const response = await fetch(`${BACKEND_URL}/api/reset-draw`, {
@@ -79,21 +79,15 @@ window.secureResetDraw = async function() {
       body: JSON.stringify({ password }),
     });
     if (!response.ok) {
-      throw new Error('Réinitialisation échouée');
+      const errorData = await response.json();
+      throw new Error(`Réinitialisation échouée: ${errorData.message || response.statusText}`);
     }
     const data = await response.json();
     alert(data.message);
     currentDraw = null; // Forcer le rechargement du tirage
+    await fetchCurrentDraw(); // Recharger immédiatement le nouveau tirage
   } catch (error) {
     console.error('Erreur lors de la réinitialisation:', error);
-    alert('Erreur lors de la réinitialisation du tirage');
+    alert(`Erreur lors de la réinitialisation du tirage: ${error.message}`);
   }
 };
-document.addEventListener('DOMContentLoaded', async function() {
-  await fetchCurrentDraw();
-  document.getElementById('check-ticket').addEventListener('click', checkTicket);
-  document.getElementById('ticket-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    checkTicket();
-  });
-});
