@@ -66,7 +66,6 @@ function displayResult(lot) {
       <p class="lot-description"><span class="lot-sponsor">${lot.sponsor}</span> - ${lot.description}</p>
     </div>
   `;
-}
 
 wwindow.secureResetDraw = async function() {
   const password = prompt("Entrez le mot de passe pour réinitialiser le tirage:");
