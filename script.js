@@ -59,7 +59,7 @@ function displayResult(lot) {
   `;
 }
 
-wwindow.secureResetDraw = async function() {
+window.secureResetDraw = async function() {
   const password = prompt("Entrez le mot de passe pour réinitialiser le tirage:");
   try {
     const response = await fetch(`${BACKEND_URL}/api/reset-draw`, {
