@@ -30,8 +30,8 @@ async function checkTicket() {
   if (currentDraw[ticketNumber]) {
     const lot = currentDraw[ticketNumber];
     resultDiv.innerHTML = `
-      <p>Félicitations ! Vous avez gagné le lot ${lot.lotNumber} : ${lot.sponsor} - ${lot.description}</p>
-      ${lot.imageUrl ? `<img src="${lot.imageUrl}" alt="Image du lot ${lot.lotNumber}" style="max-width: 100%; height: auto;">` : ''}
+     <p>Félicitations ! Vous avez gagné le lot ${lot.lotNumber} : ${lot.sponsor} - ${lot.description}</p>
+      ${lot.imageUrl ? `<img src="${lot.imageUrl}" alt="Image du lot ${lot.lotNumber}" style="max-width: 300px; max-height: 300px; width: auto; height: auto;">` : ''}
     `;
   } else {
     resultDiv.innerHTML = '<p>Désolé, vous n\'avez pas gagné. Tentez votre chance une prochaine fois !</p>';
