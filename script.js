@@ -30,17 +30,17 @@ async function checkTicket() {
   if (currentDraw[ticketNumber]) {
     const lot = currentDraw[ticketNumber];
     resultDiv.innerHTML = `
-     <p>Félicitations ! Vous avez gagné le lot ${lot.lotNumber} : ${lot.sponsor} - ${lot.description}</p>
+     <p>Congratulations! You have won prize ${lot.lotNumber} : ${lot.sponsor} - ${lot.description}</p>
       ${lot.imageUrl ? `<img src="${lot.imageUrl}" alt="Image du lot ${lot.lotNumber}" style="max-width: 400px; max-height: 400px; width: auto; height: auto;">` : ''}
     `;
   } else {
-    resultDiv.innerHTML = '<p>Désolé, vous n\'avez pas gagné. Tentez votre chance une prochaine fois !</p>';
+    resultDiv.innerHTML = '<p>Sorry, you did not win. Better luck next time!</p>';
   }
   resultDiv.style.display = 'block';
 }
 
 window.secureResetDraw = async function() {
-  const password = prompt("Entrez le mot de passe pour réinitialiser le tirage:");
+  const password = prompt("Enter the password to reset the draw:");
   try {
     const response = await fetch(`${BACKEND_URL}/api/reset-draw`, {
       method: 'POST',
@@ -51,15 +51,15 @@ window.secureResetDraw = async function() {
     });
 
     if (!response.ok) {
-      throw new Error('Réinitialisation échouée');
+      throw new Error('Reset failed');
     }
 
     const data = await response.json();
     alert(data.message);
     currentDraw = null; // Forcer le rechargement du tirage
   } catch (error) {
-    console.error('Erreur lors de la réinitialisation:', error);
-    alert('Erreur lors de la réinitialisation du tirage');
+    console.error('Error during reset:', error);
+    alert('Error resetting the draw');
   }
 };
 
