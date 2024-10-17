@@ -29,7 +29,7 @@ let currentDraw = null;
 
 // Liste des lots (assurez-vous que cette liste est à jour)
 const lots = [
-    { lotNumber: 13, sponsor: "MICHELIN KOREA", description: "1 Set of 4 Tires" },
+    { lotNumber: 13, sponsor: "MICHELIN KOREA", description: "1 Set of 4 Tires", imageUrl: "https://raw.githubusercontent.com/MuzanJacksonnn/LuckyDrawGala2024/main/images/Coupon%20Racinee.jpg" },
     { lotNumber: 14, sponsor: "JOSUN PALACE", description: "1 Night Stay in State Room for 2 persons, Breakfast included" },
     { lotNumber: 15, sponsor: "LA VALLEE VILLAGE", description: "Luxury Shopping Tour at La Vallée Village and 500 euros Gift Card" },
     { lotNumber: 16, sponsor: "LA VALLEE VILLAGE", description: "Luxury Shopping Tour at La Vallée Village and 500 euros Gift Card" },
@@ -258,17 +258,20 @@ app.get('/api/current-draw', async (req, res) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (!isInitialized) await initializeGoogleSheets();
 
-  if (!currentDraw) {
+   if (!currentDraw) {
     const resultSheet = doc.sheetsByTitle["Résultat"];
     await resultSheet.loadCells();
     currentDraw = {};
     for (let i = 1; i < resultSheet.rowCount; i++) {
       const ticket = resultSheet.getCell(i, 0).value;
       if (ticket) {
+        const lotNumber = resultSheet.getCell(i, 1).value;
+        const lot = lots.find(l => l.lotNumber === lotNumber);
         currentDraw[ticket] = {
-          lotNumber: resultSheet.getCell(i, 1).value,
+          lotNumber: lotNumber,
           sponsor: resultSheet.getCell(i, 2).value,
           description: resultSheet.getCell(i, 3).value,
+          imageUrl: lot ? lot.imageUrl : null,
         };
       }
     }
