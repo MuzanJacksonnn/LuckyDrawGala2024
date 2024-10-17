@@ -1,8 +1,9 @@
 body {
     font-family: Arial, sans-serif;
-    background-image: url('https://raw.githubusercontent.com/MuzanJacksonnn/LuckyDrawGala2024/refs/heads/main/images/Gala2024-Defilante1.jpg');
+    background-image: url('https://raw.githubusercontent.com/MuzanJacksonnn/LuckyDrawGala2024/main/images/Gala2024-Defilante1.jpg');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     background-attachment: fixed;
     display: flex;
     flex-direction: column;
