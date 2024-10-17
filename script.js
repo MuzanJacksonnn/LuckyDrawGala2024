@@ -29,9 +29,12 @@ async function checkTicket() {
 
   if (currentDraw[ticketNumber]) {
     const lot = currentDraw[ticketNumber];
-    resultDiv.textContent = `Félicitations ! Vous avez gagné le lot ${lot.lotNumber} : ${lot.sponsor} - ${lot.description}`;
+    resultDiv.innerHTML = `
+      <p>Félicitations ! Vous avez gagné le lot ${lot.lotNumber} : ${lot.sponsor} - ${lot.description}</p>
+      ${lot.imageUrl ? `<img src="${lot.imageUrl}" alt="Image du lot ${lot.lotNumber}" style="max-width: 100%; height: auto;">` : ''}
+    `;
   } else {
-    resultDiv.textContent = 'Désolé, vous n\'avez pas gagné. Tentez votre chance une prochaine fois !';
+    resultDiv.innerHTML = '<p>Désolé, vous n\'avez pas gagné. Tentez votre chance une prochaine fois !</p>';
   }
   resultDiv.style.display = 'block';
 }
