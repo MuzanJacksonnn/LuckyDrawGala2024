@@ -72,6 +72,7 @@ button:hover {
 }
 
 #result {
+    display: none; /* Cache le cadre par défaut */
     margin-top: 20px;
     padding: 10px;
     border: 2px solid #e74c3c;
