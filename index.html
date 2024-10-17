@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Tirage au sort - Gala FKCCI 2024 </title>
+    <title>Tirage au sort - Gala FKCCI 2024</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Tirage au sort - Gala FKCCI 2024</h1>
-    <div id="ticket-form">
+    
+    <form id="ticket-form">
         <label for="ticket-number">Entrez votre numéro de ticket :</label>
         <div class="input-group">
             <input type="number" id="ticket-number" required>
-            <button id="check-ticket">Vérifier</button>
+            <button type="submit" id="check-ticket">Vérifier</button>
         </div>
-    </div>
+    </form>
+
     <div id="result"></div>
+
     <script src="script.js"></script>
 </body>
 </html>
