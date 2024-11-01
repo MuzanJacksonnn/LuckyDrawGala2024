@@ -14,7 +14,6 @@ body {
     padding: 20px;
     box-sizing: border-box;
     text-align: center;
-    color: #ffffff;
 }
 
 h1 {
@@ -68,7 +67,7 @@ input[type="number"] {
 }
 
 button {
-    background-color: #d31444; /* Nouvelle couleur du bouton */
+    background-color: #d31444;
     color: white;
     border: none;
     border-radius: 4px;
@@ -79,8 +78,19 @@ button {
     max-width: 300px;
     transition: background-color 0.3s;
 }
+
 button:hover {
     background-color: #b01038;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 #result {
@@ -98,11 +108,19 @@ button:hover {
     color: #ffffff;
 }
 
-#result img {
-    max-width: 100%;
-    height: auto;
-    margin-top: 10px;
-    border-radius: 5px;
+.loader {
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #d31444;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 @media (max-width: 600px) {
@@ -121,4 +139,15 @@ button:hover {
     button {
         max-width: 100%;
     }
+    
+    #result img {
+        max-width: 100%;
+        height: auto;
+    }
 }
+
+/* Optimisation des performances de rendu */
+* {
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    transform: translateZ(0);
