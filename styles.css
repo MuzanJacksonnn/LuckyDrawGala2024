@@ -5,17 +5,78 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     min-height: 100vh;
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    color: #ffffff;
+    position: relative;
 }
 
+/* Fix pour iOS */
+@supports (-webkit-touch-callout: none) {
+    body {
+        background-attachment: scroll;
+    }
+}
+
+/* Fix pour les petits écrans */
+@media (max-width: 600px) {
+    body {
+        background-attachment: scroll;
+        background-position: center center;
+        padding: 10px;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: inherit;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        z-index: -1;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-top: 20px;
+    }
+
+    #ticket-form {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .input-group {
+        max-width: 100%;
+    }
+
+    button {
+        max-width: 100%;
+    }
+    
+    #result {
+        width: 90%;
+        padding: 15px;
+    }
+    
+    #result img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* Reste du CSS inchangé... */
 h1 {
     color: #ffffff;
     font-size: 36px;
@@ -123,31 +184,8 @@ input[type="number"] {
     100% { transform: rotate(360deg); }
 }
 
-@media (max-width: 600px) {
-    h1 {
-        font-size: 28px;
-    }
-
-    #ticket-form {
-        width: 90%;
-    }
-
-    .input-group {
-        max-width: 100%;
-    }
-
-    button {
-        max-width: 100%;
-    }
-    
-    #result img {
-        max-width: 100%;
-        height: auto;
-    }
-}
-
 /* Optimisation des performances de rendu */
 * {
     backface-visibility: hidden;
     -webkit-font-smoothing: antialiased;
-    transform: translateZ(0);
+}
