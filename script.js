@@ -6,10 +6,11 @@ const BACKEND_URL = 'https://luckydrawgala2024result-33e0820293b5.herokuapp.com'
 
 // Gestionnaire de file d'attente pour les requêtes
 class RequestQueue {
-    constructor(maxConcurrent = 50) {
+    constructor(maxConcurrent = 200) {
         this.queue = [];
         this.running = 0;
         this.maxConcurrent = maxConcurrent;
+        this.timeout = 5000; // Ajouter un timeout
     }
 
     async add(task) {
