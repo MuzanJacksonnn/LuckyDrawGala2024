@@ -6,7 +6,7 @@ const BACKEND_URL = 'https://luckydrawgala2024result-33e0820293b5.herokuapp.com'
 
 // Gestionnaire de file d'attente pour les requêtes
 class RequestQueue {
-    constructor(maxConcurrent = 150) {
+    constructor(maxConcurrent = 50) {
         this.queue = [];
         this.running = 0;
         this.maxConcurrent = maxConcurrent;
@@ -22,7 +22,8 @@ class RequestQueue {
         } finally {
             this.running--;
             if (this.queue.length > 0) {
-                const queue.shift()();
+                const next = this.queue.shift();
+                next();
             }
         }
     }
@@ -41,41 +42,37 @@ async function fetchCurrentDraw() {
         return;
     }
 
-    try {
-        const response = await requestQueue.add(async () => {
-            const res = await fetch(`${BACKEND_URL}/api/current-draw`);
-            if (!res.ok) throw new Error('Erreur lors de la récupération du tirage');
-            return res;
-        });
-        
-        const data = await response.json();
-        currentDraw = data;
-        
-        cache.set('currentDraw', {
-            timestamp: now,
-            data: data
-        });
-    } catch (error) {
-        console.error('Erreur:', error);
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = '<p>Service momentanément indisponible. Veuillez réessayer dans quelques instants.</p>';
-        resultDiv.style.display = 'block';
-    }
+    return requestQueue.add(async () => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/current-draw`);
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération du tirage');
+            }
+            const data = await response.json();
+            currentDraw = data;
+            
+            cache.set('currentDraw', {
+                timestamp: now,
+                data: data
+            });
+        } catch (error) {
+            console.error('Erreur:', error);
+            throw error;
+        }
+    });
 }
 
 async function checkTicket() {
-    const ticketNumber = document.getElementById('ticket-number').value;
     const resultDiv = document.getElementById('result');
-    
-    resultDiv.innerHTML = '<div class="loader"></div>';
     resultDiv.style.display = 'block';
-
-    if (!currentDraw) {
-        await fetchCurrentDraw();
-    }
+    resultDiv.innerHTML = '<div class="loader"></div>';
 
     try {
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 100));
+        if (!currentDraw) {
+            await fetchCurrentDraw();
+        }
+
+        const ticketNumber = document.getElementById('ticket-number').value;
 
         if (currentDraw[ticketNumber]) {
             const lot = currentDraw[ticketNumber];
@@ -89,6 +86,7 @@ async function checkTicket() {
             resultDiv.innerHTML = '<p>Sorry, you did not win. Better luck next time!</p>';
         }
     } catch (error) {
+        console.error('Erreur:', error);
         resultDiv.innerHTML = '<p>Service is currently busy. Please try again in a few moments.</p>';
     }
 }
@@ -120,28 +118,32 @@ window.secureResetDraw = async function() {
 
 function debounce(func, wait) {
     let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
+    return function(...args) {
         clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        timeout = setTimeout(() => func.apply(this, args), wait);
     };
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
-    await fetchCurrentDraw();
+    try {
+        await fetchCurrentDraw();
+    } catch (error) {
+        console.error('Initial load error:', error);
+    }
 
     const checkTicketDebounced = debounce(checkTicket, 300);
     
-    document.getElementById('check-ticket').addEventListener('click', checkTicketDebounced);
-    document.getElementById('ticket-form').addEventListener('submit', function(e) {
+    const form = document.getElementById('ticket-form');
+    const input = document.getElementById('ticket-number');
+
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         checkTicketDebounced();
     });
 
-    document.getElementById('ticket-number').addEventListener('input', function() {
+    document.getElementById('check-ticket').addEventListener('click', checkTicketDebounced);
+
+    input.addEventListener('input', function() {
         document.getElementById('result').style.display = 'none';
     });
 });
