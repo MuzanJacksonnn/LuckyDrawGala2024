@@ -36,8 +36,6 @@ const lots = [
     { lotNumber: 15, sponsor: "NOVOTEL AMBASSADOR SEOUL DONGDAEMUN", description: "One night at Executive Room with EFL benefits for 2" },
     { lotNumber: 16, sponsor: "NOVOTEL AMBASSADOR SUWON", description: "One night at Standard room with breakfast for 2" },
     { lotNumber: 17, sponsor: "IBIS AMBASSADOR SEOUL INSADONG", description: "One night at standard room" },
-    { lotNumber: 18, sponsor: "IBIS AMBASSADOR SEOUL INSADONG", description: "One night at standard room" },
-    { lotNumber: 19, sponsor: "IBIS AMBASSADOR SEOUL INSADONG", description: "Lunch Buffet for 2 persons" },
     { lotNumber: 20, sponsor: "IBIS AMBASSADOR SEOUL INSADONG", description: "Lunch Buffet for 2 persons" },
     { lotNumber: 21, sponsor: "JOSUN PALACE", description: "1 Night Stay in State Room for 2 persons, Breakfast included" },
     { lotNumber: 22, sponsor: "NEWB HOTEL SEOUL", description: "1 Night Stay at NEWV Suite for 2" },
