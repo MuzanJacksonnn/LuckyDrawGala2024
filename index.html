@@ -1,24 +1,55 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tirage au sort - Gala FKCCI 2024</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Lucky Draw - FKCCI Gala 2024</title>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel/6.26.0/babel.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Lucky Draw - FKCCI Gala 2024</h1>
-    
-    <form id="ticket-form">
-        <label for="ticket-number">Enter your ticket number:</label>
-        <div class="input-group">
-            <input type="number" id="ticket-number" required>
-            <button type="submit" id="check-ticket">Check</button>
+    <div id="root">
+        <div id="timer-container"></div>
+        <div id="main-content" style="display: none;">
+            <h1>Lucky Draw - FKCCI Gala 2024</h1>
+            <form id="ticket-form">
+                <div class="input-group">
+                    <label for="ticket-number">Enter your ticket number:</label>
+                    <input type="number" id="ticket-number" required>
+                    <button type="submit" id="check-ticket">Check</button>
+                </div>
+            </form>
+            <div id="result"></div>
         </div>
-    </form>
+    </div>
 
-    <div id="result"></div>
+    <script type="text/babel">
+        // Import le TimerComponent
+        import TimerComponent from './TimerComponent.js';
+        
+        // Render the app
+        ReactDOM.render(
+            <TimerComponent>
+                <div id="main-content-wrapper">
+                    {/* Le contenu existant sera déplacé ici dynamiquement */}
+                </div>
+            </TimerComponent>,
+            document.getElementById('timer-container')
+        );
 
+        // Une fois que le composant est monté, déplacer le contenu principal
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.getElementById('main-content');
+            const wrapper = document.getElementById('main-content-wrapper');
+            if (wrapper && mainContent) {
+                wrapper.appendChild(mainContent);
+                mainContent.style.display = 'block';
+            }
+        });
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
