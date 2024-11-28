@@ -4,96 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucky Draw - FKCCI Gala 2024</title>
-    <!-- React et ReactDOM -->
-    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel/6.26.0/babel.min.js"></script>
-    <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Vos styles -->
-    <link href="styles.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://raw.githubusercontent.com/MuzanJacksonnn/LuckyDrawGala2024/main/images/Gala2024-Defilante1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .timer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .timer-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .countdown {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(211, 20, 68, 0.8);
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin: 1rem 0;
+        }
+
+        #main-content {
+            display: none;
+        }
+
+        .main-content-visible {
+            display: block !important;
+        }
+    </style>
 </head>
 <body>
-    <div id="root">
-        <div id="timer-container"></div>
-        <div id="main-content">
-            <h1>Lucky Draw - FKCCI Gala 2024</h1>
-            <form id="ticket-form">
-                <div class="input-group">
-                    <label for="ticket-number">Enter your ticket number:</label>
-                    <input type="number" id="ticket-number" required>
-                    <button type="submit" id="check-ticket">Check</button>
-                </div>
-            </form>
-            <div id="result"></div>
+    <div id="timer-overlay" class="timer-overlay">
+        <div class="timer-container">
+            <h1>FKCCI Gala 2024 Lucky Draw</h1>
+            <p>Results will be available at 22:30 on November 29th, 2024 (Seoul time)</p>
+            <div id="countdown" class="countdown">Loading...</div>
+            <p>Please come back when the timer reaches zero.</p>
         </div>
     </div>
 
-    <script type="text/babel">
-        const TimerComponent = ({ children }) => {
-            const [timeLeft, setTimeLeft] = React.useState('');
-            const [isAccessible, setIsAccessible] = React.useState(false);
-            
-            React.useEffect(() => {
-                const targetDate = new Date('2024-11-29T22:30:00+09:00');
-                
-                const updateTimer = () => {
-                    const now = new Date();
-                    const difference = targetDate - now;
-                    
-                    if (difference <= 0) {
-                        setIsAccessible(true);
-                        setTimeLeft('');
-                        return;
-                    }
-                    
-                    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-                    
-                    setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-                    setIsAccessible(false);
-                };
-                
-                updateTimer();
-                const interval = setInterval(updateTimer, 1000);
-                return () => clearInterval(interval);
-            }, []);
-            
-            if (!isAccessible) {
-                return (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-                        <div className="bg-white bg-opacity-10 backdrop-blur-md p-8 rounded-lg max-w-lg w-full mx-4 text-center text-white">
-                            <h1 className="text-3xl font-bold mb-6">FKCCI Gala 2024 Lucky Draw</h1>
-                            <p className="text-xl mb-4">Results will be available at 22:30 on November 29th, 2024 (Seoul time)</p>
-                            <div className="text-2xl font-mono bg-red-900 rounded-lg p-4 mb-4">
-                                {timeLeft}
-                            </div>
-                            <p className="text-sm opacity-75">Please come back when the timer reaches zero.</p>
-                        </div>
-                    </div>
-                );
-            }
-            
-            return children;
-        };
+    <div id="main-content">
+        <h1>Lucky Draw - FKCCI Gala 2024</h1>
+        <form id="ticket-form">
+            <div class="input-group">
+                <label for="ticket-number">Enter your ticket number:</label>
+                <input type="number" id="ticket-number" required>
+                <button type="submit" id="check-ticket">Check</button>
+            </div>
+        </form>
+        <div id="result"></div>
+    </div>
 
-        ReactDOM.render(
-            <TimerComponent>
-                <div id="main-content-wrapper" />
-            </TimerComponent>,
-            document.getElementById('timer-container')
-        );
+    <script>
+        function updateTimer() {
+            const targetDate = new Date('2024-11-29T22:30:00+09:00');
+            const now = new Date();
+            const difference = targetDate - now;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const mainContent = document.getElementById('main-content');
-            const wrapper = document.getElementById('main-content-wrapper');
-            if (wrapper && mainContent) {
-                wrapper.appendChild(mainContent);
+            if (difference <= 0) {
+                document.getElementById('timer-overlay').style.display = 'none';
+                document.getElementById('main-content').classList.add('main-content-visible');
+                return;
             }
-        });
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').textContent = 
+                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // Update timer immediately and then every second
+        updateTimer();
+        setInterval(updateTimer, 1000);
     </script>
+
     <script src="script.js"></script>
 </body>
 </html>
