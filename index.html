@@ -1,56 +1,99 @@
-import React, { useState, useEffect } from 'react';
-
-const TimerComponent = ({ children }) => {
-  const [timeLeft, setTimeLeft] = useState('');
-  const [isAccessible, setIsAccessible] = useState(false);
-  
-  useEffect(() => {
-    const targetDate = new Date('2024-11-29T22:30:00+09:00'); // Seoul time (UTC+9)
-    
-    const updateTimer = () => {
-      const now = new Date();
-      const difference = targetDate - now;
-      
-      if (difference <= 0) {
-        setIsAccessible(true);
-        setTimeLeft('');
-        return;
-      }
-      
-      // Calculate remaining time
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-      
-      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-      setIsAccessible(false);
-    };
-    
-    // Update immediately and then every second
-    updateTimer();
-    const interval = setInterval(updateTimer, 1000);
-    
-    return () => clearInterval(interval);
-  }, []);
-  
-  if (!isAccessible) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 text-white">
-        <div className="bg-black bg-opacity-50 p-8 rounded-lg backdrop-blur-sm max-w-lg w-full text-center">
-          <h1 className="text-3xl font-bold mb-6">FKCCI Gala 2024 Lucky Draw</h1>
-          <p className="text-xl mb-4">Results will be available at 22:30 on November 29th, 2024 (Seoul time)</p>
-          <div className="text-2xl font-mono bg-red-900 rounded-lg p-4 mb-4">
-            {timeLeft}
-          </div>
-          <p className="text-sm opacity-75">Please come back when the timer reaches zero.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Draw - FKCCI Gala 2024</title>
+    <!-- React et ReactDOM -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel/6.26.0/babel.min.js"></script>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Vos styles -->
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="root">
+        <div id="timer-container"></div>
+        <div id="main-content">
+            <h1>Lucky Draw - FKCCI Gala 2024</h1>
+            <form id="ticket-form">
+                <div class="input-group">
+                    <label for="ticket-number">Enter your ticket number:</label>
+                    <input type="number" id="ticket-number" required>
+                    <button type="submit" id="check-ticket">Check</button>
+                </div>
+            </form>
+            <div id="result"></div>
         </div>
-      </div>
-    );
-  }
-  
-  return children;
-};
+    </div>
 
-export default TimerComponent;
-        
+    <script type="text/babel">
+        const TimerComponent = ({ children }) => {
+            const [timeLeft, setTimeLeft] = React.useState('');
+            const [isAccessible, setIsAccessible] = React.useState(false);
+            
+            React.useEffect(() => {
+                const targetDate = new Date('2024-11-29T22:30:00+09:00'); // Seoul time (UTC+9)
+                
+                const updateTimer = () => {
+                    const now = new Date();
+                    const difference = targetDate - now;
+                    
+                    if (difference <= 0) {
+                        setIsAccessible(true);
+                        setTimeLeft('');
+                        return;
+                    }
+                    
+                    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+                    
+                    setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+                    setIsAccessible(false);
+                };
+                
+                updateTimer();
+                const interval = setInterval(updateTimer, 1000);
+                return () => clearInterval(interval);
+            }, []);
+            
+            if (!isAccessible) {
+                return (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
+                        <div className="bg-white bg-opacity-10 backdrop-blur-md p-8 rounded-lg max-w-lg w-full mx-4 text-center text-white">
+                            <h1 className="text-3xl font-bold mb-6">FKCCI Gala 2024 Lucky Draw</h1>
+                            <p className="text-xl mb-4">Results will be available at 22:30 on November 29th, 2024 (Seoul time)</p>
+                            <div className="text-2xl font-mono bg-red-900 rounded-lg p-4 mb-4">
+                                {timeLeft}
+                            </div>
+                            <p className="text-sm opacity-75">Please come back when the timer reaches zero.</p>
+                        </div>
+                    </div>
+                );
+            }
+            
+            return children;
+        };
+
+        ReactDOM.render(
+            <TimerComponent>
+                <div id="main-content-wrapper" />
+            </TimerComponent>,
+            document.getElementById('timer-container')
+        );
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.getElementById('main-content');
+            const wrapper = document.getElementById('main-content-wrapper');
+            if (wrapper && mainContent) {
+                wrapper.appendChild(mainContent);
+            }
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
