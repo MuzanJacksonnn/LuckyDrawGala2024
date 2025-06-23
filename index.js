@@ -1,3 +1,13 @@
+// Check for critical environment variables
+const requiredEnv = ['GOOGLE_SERVICE_ACCOUNT_EMAIL', 'GOOGLE_PRIVATE_KEY', 'SPREADSHEET_ID', 'RESET_PASSWORD'];
+
+for (const key of requiredEnv) {
+  if (!process.env[key]) {
+    console.error(`❌ Environment variable "${key}" is missing`);
+    process.exit(1); // Stop server
+  }
+}
+
 const express = require('express');
 const cors = require('cors');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
