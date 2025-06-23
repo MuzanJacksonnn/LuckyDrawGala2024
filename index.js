@@ -1,12 +1,11 @@
-// Check for critical environment variables
-const requiredEnv = ['GOOGLE_SERVICE_ACCOUNT_EMAIL', 'GOOGLE_PRIVATE_KEY', 'SPREADSHEET_ID', 'RESET_PASSWORD'];
+console.log('🟢 Démarrage serveur...');
 
-for (const key of requiredEnv) {
-  if (!process.env[key]) {
-    console.error(`❌ Environment variable "${key}" is missing`);
-    process.exit(1); // Stop server
-  }
-}
+// Affiche toutes les variables d’environnement utilisées
+console.log('SPREADSHEET_ID:', process.env.SPREADSHEET_ID ? 'OK' : 'MISSING');
+console.log('GOOGLE_SERVICE_ACCOUNT_EMAIL:', process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL ? 'OK' : 'MISSING');
+console.log('GOOGLE_PRIVATE_KEY:', process.env.GOOGLE_PRIVATE_KEY ? 'OK' : 'MISSING');
+console.log('RESET_PASSWORD:', process.env.RESET_PASSWORD ? 'OK' : 'MISSING');
+
 
 const express = require('express');
 const cors = require('cors');
