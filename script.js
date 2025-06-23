@@ -2,7 +2,7 @@ const SPREADSHEET_ID = '1gDVc7UdH0P6TKq1cBtYV_D3i0RhVmarPCssWX_bR8gQ';
 const API_URL = 'http://localhost:3000';
 const RANGE = 'Tickets!A:A';
 const API_KEY = 'AIzaSyB7khzSFUMiGDzPsa04Mq3TVdDfDGOwg70';
-const BACKEND_URL = 'https://luckydrawgala2024result-33e0820293b5.herokuapp.com';
+const BACKEND_URL = 'https://bastille-day-lucky-draw.herokuapp.com';
 
 // Gestionnaire de file d'attente pour les requêtes
 class RequestQueue {
