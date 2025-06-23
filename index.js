@@ -1,37 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
+require('dotenv').config();
+
 const app = express();
-console.log('Express app created');
-
-app.use(cors({
-  origin: 'https://luckydrawgalafkcci.netlify.app',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
-
-app.use(express.json());
-
-app.get('/api/healthcheck', (req, res) => {
-    res.status(200).send('OK');
-});
-
-app.use((req, res, next) => {
-res.header('Access-Control-Allow-Origin', 'https://luckydrawgalafkcci.netlify.app');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    return res.status(200).json({});
-  }
-  next();
-});
+const PORT = process.env.PORT || 3000;
 
 const doc = new GoogleSpreadsheet(process.env.SPREADSHEET_ID);
 let isInitialized = false;
 let currentDraw = null;
 
-// Liste des lots (assurez-vous que cette liste est à jour)
 const lots = [
     { lotNumber: 11, sponsor: "FAIRMONT AMBASSADOR SEOUL", description: "One night stay at Fairmont Room with breakfast for 2" },
     { lotNumber: 12, sponsor: "NARU HOTEL SEOUL - MGALLERY AMBASSADOR", description: "One night at Premier River Suite with breakfast for 2" },
@@ -128,6 +106,25 @@ const lots = [
     { lotNumber: 105, sponsor: "LAITA", description: "Paysan Breton Gift Set" }
 ];
 
+app.use(cors({
+  origin: 'https://luckydrawgalafkcci.netlify.app',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+app.use(express.json());
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://luckydrawgalafkcci.netlify.app');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    return res.status(200).json({});
+  }
+  next();
+});
+
 async function initializeGoogleSheets() {
   try {
     await doc.useServiceAccountAuth({
@@ -143,150 +140,73 @@ async function initializeGoogleSheets() {
   }
 }
 
-async function generateNewDraw() {
-  const ticketSheet = doc.sheetsByTitle["Tickets"];
-  await ticketSheet.loadCells('A:A');
-  const tickets = [];
-  for (let i = 1; i < ticketSheet.rowCount; i++) {
-    const cell = ticketSheet.getCell(i, 0);
-    if (cell.value) {
-      tickets.push(cell.value.toString());
-    }
-  }
-
-  const shuffledTickets = tickets.sort(() => 0.5 - Math.random());
-  currentDraw = {};
-  for (let i = 0; i < Math.min(shuffledTickets.length, lots.length); i++) {
-    currentDraw[shuffledTickets[i]] = lots[i];
-  }
-
-  const resultSheet = doc.sheetsByTitle["Résultat"];
-  await resultSheet.clear();
-  await resultSheet.setHeaderRow(['Numéro du ticket', 'Numéro du lot', 'Sponsor', 'Description']);
-  const rows = Object.entries(currentDraw).map(([ticket, lot]) => [
-    ticket, lot.lotNumber, lot.sponsor, lot.description
-  ]);
-  await resultSheet.addRows(rows);
-}
-
-app.get('/api/sold-tickets', async (req, res) => {
+app.get('/api/current-draw', async (req, res) => {
   try {
     if (!isInitialized) await initializeGoogleSheets();
-    
-    console.log('Récupération des tickets vendus...');
-    const sheet = doc.sheetsByTitle["Tickets"];
-    if (!sheet) {
-      throw new Error("Feuille 'Tickets' non trouvée");
-    }
-    console.log('Feuille trouvée:', sheet.title);
-    await sheet.loadCells('A:A');
-    const tickets = [];
-    for (let i = 1; i < sheet.rowCount; i++) {
-      const cell = sheet.getCell(i, 0);
-      if (cell.value) {
-        tickets.push(cell.value.toString());
+
+    if (!currentDraw) {
+      const resultSheet = doc.sheetsByTitle['Résultat'];
+      await resultSheet.loadCells();
+      currentDraw = {};
+      for (let i = 1; i < resultSheet.rowCount; i++) {
+        const ticket = resultSheet.getCell(i, 0).value;
+        if (ticket) {
+          const lotNumber = resultSheet.getCell(i, 1).value;
+          const lot = lots.find(l => l.lotNumber === lotNumber);
+          currentDraw[ticket] = {
+            lotNumber,
+            sponsor: resultSheet.getCell(i, 2).value,
+            description: resultSheet.getCell(i, 3).value,
+            imageUrl: lot ? lot.imageUrl : null,
+          };
+        }
       }
     }
-    console.log('Nombre de tickets récupérés:', tickets.length);
-    console.log('Tickets vendus récupérés:', tickets);
-    res.json({ tickets });
+    res.json(currentDraw);
   } catch (error) {
-    console.error('Erreur lors de la récupération des tickets:', error);
-    res.status(500).json({ error: error.message });
+    console.error('Erreur dans /api/current-draw:', error);
+    res.status(500).json({ error: 'Erreur lors de la récupération du tirage' });
   }
-});
-
-app.get('/api/current-draw', async (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'https://luckydrawgala2024.netlify.app');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (!isInitialized) await initializeGoogleSheets();
-
-   if (!currentDraw) {
-    const resultSheet = doc.sheetsByTitle["Résultat"];
-    await resultSheet.loadCells();
-    currentDraw = {};
-    for (let i = 1; i < resultSheet.rowCount; i++) {
-      const ticket = resultSheet.getCell(i, 0).value;
-      if (ticket) {
-        const lotNumber = resultSheet.getCell(i, 1).value;
-        const lot = lots.find(l => l.lotNumber === lotNumber);
-        currentDraw[ticket] = {
-          lotNumber: lotNumber,
-          sponsor: resultSheet.getCell(i, 2).value,
-          description: resultSheet.getCell(i, 3).value,
-          imageUrl: lot ? lot.imageUrl : null,
-        };
-      }
-    }
-  }
-  res.json(currentDraw);
 });
 
 app.post('/api/reset-draw', async (req, res) => {
-  if (!isInitialized) await initializeGoogleSheets();
-
-  const { password } = req.body;
-  if (password !== process.env.RESET_PASSWORD) {
-    return res.status(401).json({ error: 'Mot de passe incorrect' });
-  }
-
   try {
-    await generateNewDraw();
+    if (!isInitialized) await initializeGoogleSheets();
+
+    const { password } = req.body;
+    if (password !== process.env.RESET_PASSWORD) {
+      return res.status(401).json({ error: 'Mot de passe incorrect' });
+    }
+
+    const ticketSheet = doc.sheetsByTitle['Tickets'];
+    await ticketSheet.loadCells('A:A');
+    const tickets = [];
+    for (let i = 1; i < ticketSheet.rowCount; i++) {
+      const cell = ticketSheet.getCell(i, 0);
+      if (cell.value) tickets.push(cell.value.toString());
+    }
+
+    const shuffledTickets = tickets.sort(() => 0.5 - Math.random());
+    currentDraw = {};
+    for (let i = 0; i < Math.min(shuffledTickets.length, lots.length); i++) {
+      currentDraw[shuffledTickets[i]] = lots[i];
+    }
+
+    const resultSheet = doc.sheetsByTitle['Résultat'];
+    await resultSheet.clear();
+    await resultSheet.setHeaderRow(['Numéro du ticket', 'Numéro du lot', 'Sponsor', 'Description']);
+    const rows = Object.entries(currentDraw).map(([ticket, lot]) => [
+      ticket, lot.lotNumber, lot.sponsor, lot.description
+    ]);
+    await resultSheet.addRows(rows);
+
     res.json({ message: 'Tirage réinitialisé avec succès' });
   } catch (error) {
-    console.error('Erreur lors de la réinitialisation du tirage:', error);
+    console.error('Erreur dans /api/reset-draw:', error);
     res.status(500).json({ error: 'Erreur lors de la réinitialisation du tirage' });
   }
 });
 
-app.post('/api/lottery-results', async (req, res) => {
-  if (!isInitialized) await initializeGoogleSheets();
-
-  try {
-    console.log('Received lottery results:', req.body);
-    const results = req.body;
-    const sheet = doc.sheetsByTitle["Résultat"];
-    if (!sheet) {
-      throw new Error("Sheet 'Résultat' not found");
-    }
-    console.log('Sheet found:', sheet.title);
-
-    const rows = await sheet.getRows();
-    console.log('Current rows:', rows.length);
-
-    if (rows.length === 0) {
-      console.log('Adding headers:', results[0]);
-      await sheet.setHeaderRow(results[0]);
-      results.shift();
-    }
-
-    console.log('Adding rows:', results);
-    await sheet.addRows(results);
-    res.status(200).send('Résultats enregistrés avec succès');
-  } catch (error) {
-    console.error('Erreur détaillée:', error);
-    res.status(500).send(`Erreur lors de l'enregistrement des résultats: ${error.message}`);
-  }
-});
-
-const PORT = process.env.PORT || 3000;
-
-async function startServer() {
-  try {
-    await initializeGoogleSheets();
-    app.listen(PORT, () => {
-      console.log(`Serveur démarré sur le port ${PORT}`);
-    });
-  } catch (error) {
-console.error("Erreur lors de l'initialisation du serveur:", error);
-  }
-}
-
-startServer();
-
-// Middleware de gestion d'erreurs
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
 });
