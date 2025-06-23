@@ -5,7 +5,7 @@ const app = express();
 console.log('Express app created');
 
 app.use(cors({
-  origin: 'https://luckydrawgala2024.netlify.app',
+  origin: 'https://luckydrawgalafkcci.netlify.app',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -18,7 +18,7 @@ app.get('/api/healthcheck', (req, res) => {
 });
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+res.header('Access-Control-Allow-Origin', 'https://luckydrawgalafkcci.netlify.app');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   if (req.method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
