@@ -115,12 +115,7 @@ const lots = [
     { lotNumber: 105, sponsor: "LAITA", description: "Paysan Breton Gift Set" }
 ];
 
-app.use(cors({
-  origin: 'https://luckydrawgalafkcci.netlify.app',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
+app.use(cors()); // Ligne ~100 (selon ton fichier)
 
 app.use(express.json());
 
